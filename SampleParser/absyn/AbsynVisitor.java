@@ -20,4 +20,6 @@ public interface AbsynVisitor {
 
   public void visit( WriteExp exp, int level );
 
+  public void visit( DecList exp, int level);
+
 }

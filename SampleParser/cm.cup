@@ -43,11 +43,25 @@ precedence right ELSE;
    
 
 program
-  ::= declaration_list
+  ::= declaration_list:d
+  {: RESULT = d; :}
   ;
 
 declaration_list
-  ::= declaration_list declaration
+  ::= declaration_list;d0 declaration:d1
+  {: DecList node = d0 
+    if (node = null) {
+        RESULT = new DecList( d1, null )
+    }
+    else {
+        while (node.tail != null) {
+            node = node.tail;
+        }
+        node.tail = new DecList(d1, null)
+        RESULT = d0;
+    }
+  :}
+
   |  declaration
   ;
 
@@ -58,7 +72,8 @@ declaration
   ;
 
 var_declaration
-  ::= type ID SEMI
+  ::= type ID:i SEMI
+  {: RESULT = new VarExp(ielft, iright, i)}
   |  type ID LSBRACKET NUM RSBRACKET SEMI
   ;
 
