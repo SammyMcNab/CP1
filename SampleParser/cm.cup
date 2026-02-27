@@ -203,7 +203,7 @@ factor
   |  NUM
   |  TRUTH
   ;
-should call and var be terminals?
+
 
 
 call
