@@ -6,12 +6,12 @@ terminal TRUE, FALSE;        // keep only if your scanner returns these separate
 terminal TRUTH;              // keep this if scanner returns a single TRUTH token
 terminal ID, NUM;
 
-terminal PLUS, MINUS, TIMES, OVER;
+terminal PLUS, MINUS, MUL, DIV;
 terminal LT, LE, GT, GE, EQ, NE;
 terminal NOT, OR, AND;
 terminal ASSIGN;
 terminal SEMI, COMMA;
-terminal LPAREN, RPAREN, LBRACK, RBRACK, LBRACE, RBRACE;
+terminal LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE;
 
 /* helper precedence symbol for dangling-else */
 terminal IFX;
@@ -33,7 +33,7 @@ precedence left OR;
 precedence left AND;
 precedence nonassoc LT, LE, GT, GE, EQ, NE;
 precedence left PLUS, MINUS;
-precedence left TIMES, OVER;
+precedence left MUL, DIV;
 precedence right NOT;
 precedence right IFX;
 precedence right ELSE;
@@ -58,7 +58,7 @@ declaration
 
 var_declaration
   ::= type_specifier ID SEMI
-  |  type_specifier ID LBRACK NUM RBRACK SEMI
+  |  type_specifier ID LBRACKET NUM RBRACKET SEMI
   ;
 
 type_specifier
@@ -87,7 +87,7 @@ param_list
 
 param
   ::= type_specifier ID
-  |  type_specifier ID LBRACK RBRACK
+  |  type_specifier ID LBRACKET RBRACKET
   ;
 
 compound_stmt
@@ -144,8 +144,8 @@ expression
   |  expression NE expression
   |  expression PLUS expression
   |  expression MINUS expression
-  |  expression TIMES expression
-  |  expression OVER expression
+  |  expression MUL expression
+  |  expression DIV expression
   |  NOT expression
   |  MINUS expression
   |  LPAREN expression RPAREN
@@ -159,7 +159,7 @@ expression
 
 var
   ::= ID
-  |  ID LBRACK expression RBRACK
+  |  ID LBRACKET expression RBRACKET
   ;
 
 call
