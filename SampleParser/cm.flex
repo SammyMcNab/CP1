@@ -75,19 +75,12 @@ LineTerminator = \r|\n|\r\n
    
 /* White space is a line terminator, space, tab, or form feed. */
 WhiteSpace     = {LineTerminator} | [ \t\f]
-   
-/* A literal integer is is a number beginning with a number between
-   one and nine followed by zero or more numbers between zero and nine
-   or just a zero.  */
-digit = [0-9]
-number = {digit}+
-   
-/* A identifier integer is a word beginning a letter between A and
-   Z, a and z, or an underscore followed by zero or more letters
-   between A and Z, a and z, zero and nine, or an underscore. */
-letter = [a-zA-Z]
-identifier = {letter}+
-   
+
+ID = [_a-zA-Z][_a-zA-Z0-9]*
+NUM = [0-9]+
+TRUTH = false | true
+COMMENT = "/*"([^*]|\*+[^*/])*\*+"/"
+
 %%
 /* ------------------------Lexical Rules Section---------------------- */
    
@@ -126,8 +119,8 @@ identifier = {letter}+
 "]"                { return symbol(sym.RSBRACKET); }
 "{"                { return symbol(sym.LCURLY); }
 "}"                { return symbol(sym.RCURLY); }
-{number}           { return symbol(sym.NUM, yytext()); }
-{identifier}       { return symbol(sym.ID, yytext()); }
-{WhiteSpace}+      { /* skip whitespace */ }   
-"{"[^\}]*"}"       { /* skip comments */ }
+{NUM}              { return symbol(sym.NUM, Integer.parseInt(yytext())); }
+{ID}               { return symbol(sym.ID, yytext()); }
+{whitespace}+      { /* skip whitespace */ }  
+{COMMENT}          { /* skip comments */ }
 .                  { return symbol(sym.ERROR); }
