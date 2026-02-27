@@ -132,36 +132,79 @@ return_stmt
   |  RETURN SEMI
   ;
 
-/* simplified expression grammar using precedence */
 expression
   ::= var ASSIGN expression
-  |  expression OR expression
-  |  expression AND expression
-  |  expression LT expression
-  |  expression LE expression
-  |  expression GT expression
-  |  expression GE expression
-  |  expression EQ expression
-  |  expression NE expression
-  |  expression PLUS expression
-  |  expression MINUS expression
-  |  expression MUL expression
-  |  expression DIV expression
-  |  NOT expression
-  |  MINUS expression
-  |  LPAREN expression RPAREN
-  |  var
-  |  call
-  |  NUM
-  |  TRUTH
-  |  TRUE
-  |  FALSE
+  |  obool_expression
   ;
 
 var
   ::= ID
   |  ID LSBRACKET expression RSBRACKET
   ;
+
+obool_expression
+  ::= obool_expression OR abool_expression
+  |  abool_expression
+  ;
+
+abool_expression
+  ::= abool_expression AND ubool_expression
+  |  ubool_expression
+  ;
+
+ubool_expression
+  ::= NOT ubool_expression
+  |  simple_expression
+  ;
+
+simple_expression
+  ::= additive_expression relop additive_expression
+  |  additive_expression
+  ;
+
+relop
+  ::= LE
+  |  LT
+  |  GT
+  |  GE
+  |  EQ
+  |  NE
+  ;
+
+additive_expression
+  ::= additive_expression addop term
+  |  term
+  ;
+
+addop
+  ::= PLUS
+  |  MINUS
+  ;
+
+term
+  ::= term mulop signed_factor
+  |  signed_factor
+  ;
+
+mulop
+  ::= MUL
+  |  DIV
+  ;
+
+signed_factor
+  ::= MINUS signed_factor
+  |  factor
+  ;
+
+factor
+  ::= LPAREN expression RPAREN
+  |  var
+  |  call
+  |  NUM
+  |  TRUTH
+  ;
+should call and var be terminals?
+
 
 call
   ::= ID LPAREN args RPAREN
