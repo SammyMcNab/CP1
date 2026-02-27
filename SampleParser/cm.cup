@@ -62,19 +62,23 @@ declaration_list
     }
   :}
 
-  |  declaration
-  ;
+  |  declaration:d
+  {: RESULT = new DecList(d, null); :}
 
 declaration
-  ::= var_declaration
-  |  fun_declaration
-  |  fun_prototype
+  ::= var_declaration:v
+  {: RESULT = v; :}
+  |  fun_declaration:f
+  {: RESULT = f; :}
+  |  fun_prototype:fp
+  {: RESULT = fp; :}
   ;
 
 var_declaration
   ::= type ID:i SEMI
-  {: RESULT = new VarExp(ielft, iright, i)}
-  |  type ID LSBRACKET NUM RSBRACKET SEMI
+  {: RESULT = new GeneralDec(ielft, iright, type, i) :}
+  |  type ID:i LSBRACKET NUM:n RSBRACKET SEMI
+  {:  :}
   ;
 
 type
