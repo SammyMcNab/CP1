@@ -11,7 +11,7 @@ terminal LT, LE, GT, GE, EQ, NE;
 terminal NOT, OR, AND;
 terminal ASSIGN;
 terminal SEMI, COMMA;
-terminal LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE;
+terminal LPAREN, RPAREN, LSBRACKET, RSBRACKET, LCURLY, RCURLY;
 
 /* helper precedence symbol for dangling-else */
 terminal IFX;
@@ -58,7 +58,7 @@ declaration
 
 var_declaration
   ::= type_specifier ID SEMI
-  |  type_specifier ID LBRACKET NUM RBRACKET SEMI
+  |  type_specifier ID LSBRACKET NUM RSBRACKET SEMI
   ;
 
 type_specifier
@@ -87,11 +87,11 @@ param_list
 
 param
   ::= type_specifier ID
-  |  type_specifier ID LBRACKET RBRACKET
+  |  type_specifier ID LSBRACKET RSBRACKET
   ;
 
 compound_stmt
-  ::= LBRACE local_declarations stmt_list RBRACE
+  ::= LCURLY local_declarations stmt_list RCURLY
   ;
 
 local_declarations
@@ -159,7 +159,7 @@ expression
 
 var
   ::= ID
-  |  ID LBRACKET expression RBRACKET
+  |  ID LSBRACKET expression RSBRACKET
   ;
 
 call
