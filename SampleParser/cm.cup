@@ -2,8 +2,7 @@
 import absyn.*;
 
 terminal BOOL, ELSE, IF, INT, RETURN, VOID, WHILE;
-terminal TRUE, FALSE;        // keep only if your scanner returns these separately
-terminal TRUTH;              // keep this if scanner returns a single TRUTH token
+terminal TRUTH;              
 terminal ID, NUM;
 
 terminal PLUS, MINUS, MUL, DIV;
@@ -17,13 +16,15 @@ terminal LPAREN, RPAREN, LSBRACKET, RSBRACKET, LCURLY, RCURLY;
 terminal IFX;
 
 non terminal program;
-non terminal declaration_list, declaration, var_declaration, type_specifier;
+non terminal declaration_list, declaration, var_declaration, type;
 non terminal fun_declaration, fun_prototype, params, param_list, param;
 non terminal compound_stmt, local_declarations, stmt_list, stmt;
 non terminal expression_stmt, selection_stmt, iteration_stmt, return_stmt;
 non terminal expression, var;
-non terminal simple_expression, additive_expression, term, signed_factor, factor;
-non terminal call, args, args_list;
+non terminal obool_expression, abool_expression, ubool_expression, simple_expression
+non terminal relop, additive_expression, additive_expression, addop, term, mulop
+non terminal signed_factor, factor, call, args, args_list
+
 
 start with program;
 
@@ -57,22 +58,22 @@ declaration
   ;
 
 var_declaration
-  ::= type_specifier ID SEMI
-  |  type_specifier ID LSBRACKET NUM RSBRACKET SEMI
+  ::= type ID SEMI
+  |  type ID LSBRACKET NUM RSBRACKET SEMI
   ;
 
-type_specifier
+type
   ::= BOOL
   |  INT
   |  VOID
   ;
 
 fun_declaration
-  ::= type_specifier ID LPAREN params RPAREN compound_stmt
+  ::= type ID LPAREN params RPAREN compound_stmt
   ;
 
 fun_prototype
-  ::= type_specifier ID LPAREN params RPAREN SEMI
+  ::= type ID LPAREN params RPAREN SEMI
   ;
 
 params
@@ -86,8 +87,8 @@ param_list
   ;
 
 param
-  ::= type_specifier ID
-  |  type_specifier ID LSBRACKET RSBRACKET
+  ::= type ID
+  |  type ID LSBRACKET RSBRACKET
   ;
 
 compound_stmt
