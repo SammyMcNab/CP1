@@ -1,0 +1,177 @@
+
+import absyn.*;
+
+terminal BOOL, ELSE, IF, INT, RETURN, VOID, WHILE;
+terminal TRUE, FALSE;        // keep only if your scanner returns these separately
+terminal TRUTH;              // keep this if scanner returns a single TRUTH token
+terminal ID, NUM;
+
+terminal PLUS, MINUS, TIMES, OVER;
+terminal LT, LE, GT, GE, EQ, NE;
+terminal NOT, OR, AND;
+terminal ASSIGN;
+terminal SEMI, COMMA;
+terminal LPAREN, RPAREN, LBRACK, RBRACK, LBRACE, RBRACE;
+
+/* helper precedence symbol for dangling-else */
+terminal IFX;
+
+non terminal program;
+non terminal declaration_list, declaration, var_declaration, type_specifier;
+non terminal fun_declaration, fun_prototype, params, param_list, param;
+non terminal compound_stmt, local_declarations, stmt_list, stmt;
+non terminal expression_stmt, selection_stmt, iteration_stmt, return_stmt;
+non terminal expression, var;
+non terminal simple_expression, additive_expression, term, signed_factor, factor;
+non terminal call, args, args_list;
+
+start with program;
+
+/* precedence / associativity */
+precedence right ASSIGN;
+precedence left OR;
+precedence left AND;
+precedence nonassoc LT, LE, GT, GE, EQ, NE;
+precedence left PLUS, MINUS;
+precedence left TIMES, OVER;
+precedence right NOT;
+precedence right IFX;
+precedence right ELSE;
+
+/* ----------------------------Grammar Section-------------------- */
+   
+
+program
+  ::= declaration_list
+  ;
+
+declaration_list
+  ::= declaration_list declaration
+  |  declaration
+  ;
+
+declaration
+  ::= var_declaration
+  |  fun_declaration
+  |  fun_prototype
+  ;
+
+var_declaration
+  ::= type_specifier ID SEMI
+  |  type_specifier ID LBRACK NUM RBRACK SEMI
+  ;
+
+type_specifier
+  ::= BOOL
+  |  INT
+  |  VOID
+  ;
+
+fun_declaration
+  ::= type_specifier ID LPAREN params RPAREN compound_stmt
+  ;
+
+fun_prototype
+  ::= type_specifier ID LPAREN params RPAREN SEMI
+  ;
+
+params
+  ::= param_list
+  |  VOID
+  ;
+
+param_list
+  ::= param_list COMMA param
+  |  param
+  ;
+
+param
+  ::= type_specifier ID
+  |  type_specifier ID LBRACK RBRACK
+  ;
+
+compound_stmt
+  ::= LBRACE local_declarations stmt_list RBRACE
+  ;
+
+local_declarations
+  ::= local_declarations var_declaration
+  |
+  ;
+
+stmt_list
+  ::= stmt_list stmt
+  |
+  ;
+
+stmt
+  ::= expression_stmt
+  |  compound_stmt
+  |  selection_stmt
+  |  iteration_stmt
+  |  return_stmt
+  ;
+
+expression_stmt
+  ::= expression SEMI
+  |  SEMI
+  ;
+
+selection_stmt
+  ::= IF LPAREN expression RPAREN stmt %prec IFX
+  |  IF LPAREN expression RPAREN stmt ELSE stmt
+  ;
+
+iteration_stmt
+  ::= WHILE LPAREN expression RPAREN stmt
+  ;
+
+return_stmt
+  ::= RETURN expression SEMI
+  |  RETURN SEMI
+  ;
+
+/* simplified expression grammar using precedence */
+expression
+  ::= var ASSIGN expression
+  |  expression OR expression
+  |  expression AND expression
+  |  expression LT expression
+  |  expression LE expression
+  |  expression GT expression
+  |  expression GE expression
+  |  expression EQ expression
+  |  expression NE expression
+  |  expression PLUS expression
+  |  expression MINUS expression
+  |  expression TIMES expression
+  |  expression OVER expression
+  |  NOT expression
+  |  MINUS expression
+  |  LPAREN expression RPAREN
+  |  var
+  |  call
+  |  NUM
+  |  TRUTH
+  |  TRUE
+  |  FALSE
+  ;
+
+var
+  ::= ID
+  |  ID LBRACK expression RBRACK
+  ;
+
+call
+  ::= ID LPAREN args RPAREN
+  ;
+
+args
+  ::= args_list
+  |
+  ;
+
+args_list
+  ::= args_list COMMA expression
+  |  expression
+  ;
