@@ -88,19 +88,23 @@ declaration
 
 var_declaration
   ::= type:t ID:i SEMI
-  {: RESULT = new GeneralDec(ileft, iright, t, i); :}
+  {: RESULT = new GeneralDec(tleft, tright, t, i); :}
   |  type:t ID:i LSBRACKET NUM:n RSBRACKET SEMI
-  {:  :}
+  {: RESULT = new ArrayDec(tleft, tright, y, i, n) :}
   ;
 
 type
-  ::= BOOL
-  |  INT
-  |  VOID
+  ::= BOOL:b
+  {: RETURN = new Type(b.left, b.right, b); :}
+  |  INT:i
+  {: RETURN = new Type(i.left, i.right, i); :}
+  |  VOID:v
+  {: RETURN = new Type(v.left, v.right, v); :}
   ;
 
 fun_declaration
   ::= type ID LPAREN params RPAREN compound_stmt
+  {:  :}
   ;
 
 fun_prototype
