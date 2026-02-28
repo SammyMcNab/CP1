@@ -96,7 +96,7 @@ COMMENT = "/*"([^*]|\*+[^*/])*\*+"/"
 "return"           { return symbol(sym.RETURN); }
 "void"             { return symbol(sym.VOID); }
 "while"            { return symbol(sym.WHILE); }
-{TRUTH}            { return symbol(sym.TRUTH, yytext()); }
+{TRUTH}            { return symbol(sym.TRUTH, Boolean.parseBoolean(yytext())); }
 "+"               { return symbol(sym.PLUS); }
 "-"                { return symbol(sym.MINUS); }
 "*"                { return symbol(sym.MUL); }

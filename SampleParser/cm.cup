@@ -2,7 +2,7 @@
 import absyn.*;
 
 terminal BOOL, ELSE, IF, INT, RETURN, VOID, WHILE;
-terminal TRUTH;              
+terminal boolean TRUTH;              
 terminal ID, NUM;
 
 terminal PLUS, MINUS, MUL, DIV;
@@ -95,11 +95,11 @@ var_declaration
 
 type
   ::= BOOL:b
-  {: RESULT = new Type(bleft, bright, b); :}
+  {: RESULT = new Type(bleft, bright, "bool"); :}
   |  INT:i
-  {: RESULT = new Type(ileft, iright, i); :}
+  {: RESULT = new Type(ileft, iright, "int"); :}
   |  VOID:v
-  {: RESULT = new Type(vleft, vright, v); :}
+  {: RESULT = new Type(vleft, vright, "void"); :}
   ;
 
 fun_declaration
