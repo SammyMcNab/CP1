@@ -6,7 +6,7 @@ public class FunDec extends Dec {
   public Exp body;
   public VarDecList params;
 
-  public FunDec( int row, int col, Type type, String name, VarDecList params, String body ) {
+  public FunDec( int row, int col, Type type, String name, VarDecList params, Exp body ) {
     this.row = row;
     this.col = col;
     this.type = type;

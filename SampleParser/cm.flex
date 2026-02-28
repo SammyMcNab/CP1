@@ -74,7 +74,7 @@ import java_cup.runtime.*;
 LineTerminator = \r|\n|\r\n
    
 /* White space is a line terminator, space, tab, or form feed. */
-WhiteSpace     = {LineTerminator} | [ \t\f]
+Whitespace = {LineTerminator} | [ \t\f]
 
 ID = [_a-zA-Z][_a-zA-Z0-9]*
 NUM = [0-9]+
@@ -121,6 +121,6 @@ COMMENT = "/*"([^*]|\*+[^*/])*\*+"/"
 "}"                { return symbol(sym.RCURLY); }
 {NUM}              { return symbol(sym.NUM, Integer.parseInt(yytext())); }
 {ID}               { return symbol(sym.ID, yytext()); }
-{whitespace}+      { /* skip whitespace */ }  
+{Whitespace}+      { /* skip whitespace */ }  
 {COMMENT}          { /* skip comments */ }
 .                  { return symbol(sym.ERROR); }
