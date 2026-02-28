@@ -3,8 +3,8 @@ package absyn;
 public class ArrDec extends GeneralDec {
     public int size;
 
-  public ArrDec( int row, int col, String type, String name, int size ) {
-    super(row, col, type, name)
+  public ArrDec( int row, int col, Type type, String name, int size ) {
+    super(row, col, type, name);
     this.size = size;
   }
 

@@ -1,14 +1,17 @@
 package absyn;
 
-public class GeneralDec extends Dec {
+public class FunPro extends Dec {
   public String name;
   public Type type;
+  public VarDecList params;
 
-  public GeneralDec( int row, int col, Type type, String name ) {
+  public FunPro( int row, int col, Type type, String name, VarDecList params ) {
     this.row = row;
     this.col = col;
     this.type = type;
     this.name = name;
+    this.params = params;
+
   }
 
   public void accept( AbsynVisitor visitor, int level ) {
