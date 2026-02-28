@@ -26,9 +26,17 @@ non terminal relop, additive_expression, addop, term, mulop;
 non terminal signed_factor, factor, call, args, args_list;
 
 
-start with program;
+/* ---- Precedence declarations (lowest to highest) ----
+   This tells CUP how to resolve ambiguities:
+   - ASSIGN is right-associative (a = b = c  means  a = (b = c))
+   - OR is left-associative, lower than AND
+   - Comparison operators are non-associative (a < b < c is invalid)
+   - PLUS/MINUS are left-assoc, then MUL/DIV
+   - NOT and unary minus are right-associative (highest among expressions)
+   - IFX < ELSE resolves dangling else
+*/
 
-/* precedence / associativity */
+
 precedence right ASSIGN;
 precedence left OR;
 precedence left AND;
@@ -38,6 +46,8 @@ precedence left MUL, DIV;
 precedence right NOT;
 precedence right IFX;
 precedence right ELSE;
+
+start with program;
 
 /* ----------------------------Grammar Section-------------------- */
    
