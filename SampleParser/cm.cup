@@ -95,162 +95,222 @@ var_declaration
 
 type
   ::= BOOL:b
-  {: RETURN = new Type(b.left, b.right, b); :}
+  {: RESULT = new Type(b.left, b.right, b); :}
   |  INT:i
-  {: RETURN = new Type(i.left, i.right, i); :}
+  {: RESULT = new Type(i.left, i.right, i); :}
   |  VOID:v
-  {: RETURN = new Type(v.left, v.right, v); :}
+  {: RESULT = new Type(v.left, v.right, v); :}
   ;
 
 fun_declaration
-  ::= type ID LPAREN params RPAREN compound_stmt
-  {:  :}
+  ::= type:t ID:i LPAREN params:p RPAREN compound_stmt:cs
+  {: RESULT = new FunDec(tleft, tright, t, i, p, cs) :}
   ;
 
 fun_prototype
-  ::= type ID LPAREN params RPAREN SEMI
+  ::= type:t ID:i LPAREN params:p RPAREN SEMI
+  {: :}
   ;
 
 params
-  ::= param_list
-  |  VOID
+  ::= param_list:pl
+  {: :}
+  |  VOID:v
+  {: :}
   ;
 
 param_list
-  ::= param_list COMMA param
-  |  param
+  ::= param_list:pl COMMA param:p
+  {: :}
+  |  param:p
+  {: :}
   ;
 
 param
-  ::= type ID
-  |  type ID LSBRACKET RSBRACKET
+  ::= type:t ID:i
+  {: :}
+  |  type:t ID:i LSBRACKET RSBRACKET
+  {: :}
   ;
 
 compound_stmt
-  ::= LCURLY local_declarations stmt_list RCURLY
+  ::= LCURLY:l local_declarations:ld stmt_list:sl RCURLY
+  {: :}
   ;
 
 local_declarations
-  ::= local_declarations var_declaration
+  ::= local_declarations:ld var_declaration:vd
+  {: :}
   |
+  {: :}
   ;
 
 stmt_list
-  ::= stmt_list stmt
+  ::= stmt_list:sl stmt:s
+  {: :}
   |
+  {: :}
   ;
 
 stmt
-  ::= expression_stmt
-  |  compound_stmt
-  |  selection_stmt
-  |  iteration_stmt
-  |  return_stmt
+  ::= expression_stmt:s
+  {: :}
+  |  compound_stmt:s
+  {: :}
+  |  selection_stmt:s
+  {: :}
+  |  iteration_stmt:s
+  {: :}
+  |  return_stmt:s
+  {: :}
   ;
 
 expression_stmt
-  ::= expression SEMI
-  |  SEMI
+  ::= expression:e SEMI
+  {: :}
+  |  SEMI:s
+  {: :}
   ;
 
 selection_stmt
-  ::= IF LPAREN expression RPAREN stmt %prec IFX
-  |  IF LPAREN expression RPAREN stmt ELSE stmt
+  ::= IF:i LPAREN expression:e RPAREN stmt:s %prec IFX
+  {: :}
+  |  IF:i LPAREN expression:e RPAREN stmt:s1 ELSE stmt:s2
+  {: :}
   ;
 
 iteration_stmt
-  ::= WHILE LPAREN expression RPAREN stmt
+  ::= WHILE:w LPAREN expression:e RPAREN stmt:s
+  {: :}
   ;
 
 return_stmt
-  ::= RETURN expression SEMI
-  |  RETURN SEMI
+  ::= RETURN:r expression:e SEMI
+  {: :}
+  |  RETURN:r SEMI
+  {: :}
   ;
 
 expression
-  ::= var ASSIGN expression
-  |  obool_expression
+  ::= var:v ASSIGN expression:e
+  {: :}
+  |  obool_expression:o
+  {: :}
   ;
 
 var
-  ::= ID
-  |  ID LSBRACKET expression RSBRACKET
+  ::= ID:i
+  {: :}
+  |  ID:i LSBRACKET expression:e RSBRACKET
+  {: :}
   ;
 
 obool_expression
-  ::= obool_expression OR abool_expression
-  |  abool_expression
+  ::= obool_expression:o OR abool_expression:a
+  {: :}
+  |  abool_expression:a
+  {: :}
   ;
 
 abool_expression
-  ::= abool_expression AND ubool_expression
-  |  ubool_expression
+  ::= abool_expression:a AND ubool_expression:u
+  {: :}
+  |  ubool_expression:u
+  {: :}
   ;
 
 ubool_expression
-  ::= NOT ubool_expression
-  |  simple_expression
+  ::= NOT:n ubool_expression:u
+  {: :}
+  |  simple_expression:s
+  {: :}
   ;
 
 simple_expression
-  ::= additive_expression relop additive_expression
-  |  additive_expression
+  ::= additive_expression:a1 relop:r additive_expression:a2
+  {: :}
+  |  additive_expression:a
+  {: :}
   ;
 
 relop
-  ::= LE
-  |  LT
-  |  GT
-  |  GE
-  |  EQ
-  |  NE
+  ::= LE:r
+  {: :}
+  |  LT:r
+  {: :}
+  |  GT:r
+  {: :}
+  |  GE:r
+  {: :}
+  |  EQ:r
+  {: :}
+  |  NE:r
+  {: :}
   ;
 
 additive_expression
-  ::= additive_expression addop term
-  |  term
+  ::= additive_expression:a addop:op term:t
+  {: :}
+  |  term:t
+  {: :}
   ;
 
 addop
-  ::= PLUS
-  |  MINUS
+  ::= PLUS:op
+  {: :}
+  |  MINUS:op
+  {: :}
   ;
 
 term
-  ::= term mulop signed_factor
-  |  signed_factor
+  ::= term:t mulop:op signed_factor:f
+  {: :}
+  |  signed_factor:f
+  {: :}
   ;
 
 mulop
-  ::= MUL
-  |  DIV
+  ::= MUL:op
+  {: :}
+  |  DIV:op
+  {: :}
   ;
 
 signed_factor
-  ::= MINUS signed_factor
-  |  factor
+  ::= MINUS:m signed_factor:f
+  {: :}
+  |  factor:f
+  {: :}
   ;
 
 factor
-  ::= LPAREN expression RPAREN
-  |  var
-  |  call
-  |  NUM
-  |  TRUTH
+  ::= LPAREN expression:e RPAREN
+  {: :}
+  |  var:v
+  {: :}
+  |  call:c
+  {: :}
+  |  NUM:n
+  {: :}
+  |  TRUTH:t
+  {: :}
   ;
 
-
-
 call
-  ::= ID LPAREN args RPAREN
+  ::= ID:i LPAREN args:a RPAREN
+  {: :}
   ;
 
 args
-  ::= args_list
+  ::= args_list:al
+  {: :}
   |
+  {: :}
   ;
 
 args_list
-  ::= args_list COMMA expression
-  |  expression
+  ::= args_list:al COMMA expression:e
+  {: :}
+  |  expression:e
+  {: :}
   ;
