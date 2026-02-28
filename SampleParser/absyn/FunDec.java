@@ -1,16 +1,18 @@
 package absyn;
 
-public class GeneralDec extends Absyn {
+public class FunDec extends Dec {
   public String name;
   public Type type;
-  public String params;
   public String stmt;
+  public VarDecList params;
 
-  public GeneralDec( int row, int col, Type type, String name,  ) {
+  public FunDec( int row, int col, Type type, String name, VarDecList params, String stmt ) {
     this.row = row;
     this.col = col;
     this.type = type;
     this.name = name;
+    this.stmt = stmt;
+    this.params = params;
 
   }
 
