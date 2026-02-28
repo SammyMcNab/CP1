@@ -3,7 +3,8 @@ import absyn.*;
 
 terminal BOOL, ELSE, IF, INT, RETURN, VOID, WHILE;
 terminal boolean TRUTH;              
-terminal ID, NUM;
+terminal String ID; 
+terminal int NUM;
 
 terminal PLUS, MINUS, MUL, DIV;
 terminal LT, LE, GT, GE, EQ, NE;
