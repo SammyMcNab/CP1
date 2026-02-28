@@ -49,21 +49,22 @@ program
 
 declaration_list
   ::= declaration_list;d0 declaration:d1
-  {: DecList node = d0 
-    if (node = null) {
-        RESULT = new DecList( d1, null )
+  {: DecList node = d0;
+    if (node == null) {
+        RESULT = new DecList(d1, null);
     }
     else {
         while (node.tail != null) {
             node = node.tail;
         }
-        node.tail = new DecList(d1, null)
+        node.tail = new DecList(d1, null);
         RESULT = d0;
     }
   :}
 
   |  declaration:d
   {: RESULT = new DecList(d, null); :}
+  ;
 
 declaration
   ::= var_declaration:v
