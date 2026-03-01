@@ -75,7 +75,6 @@ terminal NOT, OR, AND;
 terminal ASSIGN;
 terminal SEMI, COMMA;
 terminal LPAREN, RPAREN, LSBRACKET, RSBRACKET, LCURLY, RCURLY;
-terminal ERROR;
 
 /* helper precedence symbol for dangling-else */
 terminal IFX;
