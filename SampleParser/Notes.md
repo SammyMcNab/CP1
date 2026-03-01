@@ -1,0 +1,1 @@
+ArrDec could be VarDec based on the grammar but that would cause confusion so we named it ArrDec to make it easier to understand when output to terminal

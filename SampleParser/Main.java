@@ -1,34 +1,39 @@
-/*
-  Created by: Fei Song
-  File Name: Main.java
-  To Build: 
-  After the Scanner.java, tiny.flex, and tiny.cup have been processed, do:
-    javac Main.java
-  
-  To Run: 
-    java -classpath /usr/share/java/cup.jar:. Main gcd.tiny
-
-  where gcd.tiny is an test input file for the tiny language.
-*/
-   
 import java.io.*;
 import absyn.*;
-   
+
 class Main {
-  public final static boolean SHOW_TREE = true;
-  static public void main(String argv[]) {    
-    /* Start the parser */
+  static public void main(String argv[]) {
+    boolean showTree = false;
+    String filename = null;
+
+    for (String arg : argv) {
+      if (arg.equals("-a")) {
+        showTree = true;
+      } else {
+        filename = arg;
+      }
+    }
+
+    if (filename == null) {
+      System.err.println("Usage: CM [-a] <filename>");
+      System.exit(1);
+    }
+
     try {
-      parser p = new parser(new Lexer(new FileReader(argv[0])));
-      Absyn result = (Absyn)(p.parse().value);      
-      if (SHOW_TREE && result != null) {
-         System.out.println("The abstract syntax tree is:");
-         AbsynVisitor visitor = new ShowTreeVisitor();
-         result.accept(visitor, 0); 
+      parser p = new parser(new Lexer(new FileReader(filename)));
+      Absyn result = (Absyn)(p.parse().value);
+
+      if (showTree && result != null) {
+        System.out.println("The abstract syntax tree is:");
+        AbsynVisitor visitor = new ShowTreeVisitor();
+        result.accept(visitor, 0);
+      }
+
+      if (!parser.valid) {
+        System.err.println("Parsing completed with errors.");
       }
     } catch (Exception e) {
-      /* do cleanup here -- possibly rethrow e */
-      e.printStackTrace();
+      System.err.println("Unexpected error: " + e.getMessage());
     }
   }
 }
