@@ -218,7 +218,7 @@ param
 
 compound_stmt
   ::= LCURLY:l local_declarations:ld stmt_list:sl RCURLY
-  {: RESULT = new CompoundExp(lleft, lright, ld, sl); :}
+  {: RESULT = new CompoundStmt(lleft, lright, ld, sl); :}
   ;
 
 local_declarations

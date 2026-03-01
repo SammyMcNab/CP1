@@ -36,7 +36,7 @@ public interface AbsynVisitor {
 
   public void visit( ReturnExp node, int level );
 
-  public void visit( CompoundExp node, int level );
+  public void visit( CompoundStmt node, int level );
 
   public void visit( CallExp node, int level );
 
