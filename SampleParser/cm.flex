@@ -123,4 +123,4 @@ COMMENT = "/*"([^*]|\*+[^*/])*\*+"/"
 {ID}               { return symbol(sym.ID, yytext()); }
 {Whitespace}+      { /* skip whitespace */ }  
 {COMMENT}          { /* skip comments */ }
-.                  { return symbol(sym.ERROR); }
+.                  { System.err.println("Lexical error: illegal character '" + yytext() + "' at line " + (yyline+1) + ", column " + (yycolumn+1)); }

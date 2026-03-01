@@ -143,9 +143,13 @@ declaration_list
   :}
   |  declaration:d
   {: RESULT = new DecList(d, null); :}
-  |  ERROR SEMI declaration:d
-  {: parser.report_error("invalid", null);
-     RESULT = new DecList(d, null);
+  |  declaration_list:d0 error:e RCURLY
+  {: parser.report_error("invalid declaration", null);
+     RESULT = d0;
+  :}
+  |  error:e RCURLY
+  {: parser.report_error("invalid declaration", null);
+     RESULT = null;
   :}
   ;
 
