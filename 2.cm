@@ -1,5 +1,5 @@
 /* A program to compute the factorial value of an integer */
-/*  Errors: Missing semi colons on line 5, 8 and 12 */
+/*  Errors: Missing semi colons on line 5, 8 and 12, testing for syntax errors */
 
 void main(void) {
   int x
