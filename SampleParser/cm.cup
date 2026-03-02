@@ -77,7 +77,7 @@ terminal SEMI, COMMA;
 terminal LPAREN, RPAREN, LSBRACKET, RSBRACKET, LCURLY, RCURLY;
 
 /* helper precedence symbols */
-terminal IFX;
+/*terminal IFX;*/
 terminal UMINUS;
 
 non terminal DecList program, declaration_list;
@@ -85,7 +85,8 @@ non terminal Dec declaration, fun_declaration, fun_prototype;
 non terminal GeneralDec var_declaration, param;
 non terminal Type type;
 non terminal VarDecList params, param_list, local_declarations;
-non terminal Exp compound_stmt, stmt, expression_stmt, selection_stmt;
+non terminal Exp compound_stmt, stmt, expression_stmt;
+non terminal Exp matched_stmt, unmatched_stmt, other_stmt;
 non terminal Exp iteration_stmt, return_stmt;
 non terminal Exp expression;
 non terminal Exp call;
@@ -101,8 +102,6 @@ precedence nonassoc LT, LE, GT, GE, EQ, NE;
 precedence left PLUS, MINUS;
 precedence left MUL, DIV;
 precedence right UMINUS;
-precedence right IFX;
-precedence right ELSE;
 
 
 start with program;
@@ -246,16 +245,35 @@ stmt_list
   ;
 
 stmt
+  ::= matched_stmt:m
+      {: RESULT = m; :}
+  |  unmatched_stmt:u
+      {: RESULT = u; :}
+  ;
+
+other_stmt
   ::= expression_stmt:s
-  {: RESULT = s; :}
+      {: RESULT = s; :}
   |  compound_stmt:s
-  {: RESULT = s; :}
-  |  selection_stmt:s
-  {: RESULT = s; :}
+      {: RESULT = s; :}
   |  iteration_stmt:s
-  {: RESULT = s; :}
+      {: RESULT = s; :}
   |  return_stmt:s
-  {: RESULT = s; :}
+      {: RESULT = s; :}
+  ;
+
+matched_stmt
+  ::= IF:i LPAREN expression:e RPAREN matched_stmt:s1 ELSE matched_stmt:s2
+      {: RESULT = new IfExp(ileft, iright, e, s1, s2); :}
+  |  other_stmt:o
+      {: RESULT = o; :}
+  ;
+
+unmatched_stmt
+  ::= IF:i LPAREN expression:e RPAREN stmt:s
+      {: RESULT = new IfExp(ileft, iright, e, s, new NilExp(ileft, iright)); :}
+  |  IF:i LPAREN expression:e RPAREN matched_stmt:s1 ELSE unmatched_stmt:s2
+      {: RESULT = new IfExp(ileft, iright, e, s1, s2); :}
   ;
 
 expression_stmt
@@ -265,14 +283,6 @@ expression_stmt
   {: RESULT = new NilExp(sleft, sright); :}
   |  error:e
   {: RESULT = new NilExp(eleft, eright); :}
-  ;
-
-selection_stmt
-  ::= IF:i LPAREN expression:e RPAREN stmt:s
-  {: RESULT = new IfExp(ileft, iright, e, s, new NilExp(ileft, iright)); :}
-  %prec IFX
-  |  IF:i LPAREN expression:e RPAREN stmt:s1 ELSE stmt:s2
-  {: RESULT = new IfExp(ileft, iright, e, s1, s2); :}
   ;
 
 iteration_stmt
