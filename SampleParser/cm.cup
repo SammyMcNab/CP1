@@ -76,8 +76,9 @@ terminal ASSIGN;
 terminal SEMI, COMMA;
 terminal LPAREN, RPAREN, LSBRACKET, RSBRACKET, LCURLY, RCURLY;
 
-/* helper precedence symbol for dangling-else */
+/* helper precedence symbols */
 terminal IFX;
+terminal UMINUS;
 
 non terminal DecList program, declaration_list;
 non terminal Dec declaration, fun_declaration, fun_prototype;
@@ -86,32 +87,20 @@ non terminal Type type;
 non terminal VarDecList params, param_list, local_declarations;
 non terminal Exp compound_stmt, stmt, expression_stmt, selection_stmt;
 non terminal Exp iteration_stmt, return_stmt;
-non terminal Exp expression, obool_expression, abool_expression, ubool_expression;
-non terminal Exp simple_expression, additive_expression, term, signed_factor, factor;
+non terminal Exp expression;
 non terminal Exp call;
 non terminal VarExp var;
-non terminal Integer relop, addop, mulop;
 non terminal ExpList args, args_list, stmt_list;
-
-
-/* ---- Precedence declarations (lowest to highest) ----
-   This tells CUP how to resolve ambiguities:
-   - ASSIGN is right-associative (a = b = c  means  a = (b = c))
-   - OR is left-associative, lower than AND
-   - Comparison operators are non-associative (a < b < c is invalid)
-   - PLUS/MINUS are left-assoc, then MUL/DIV
-   - NOT and unary minus are right-associative (highest among expressions)
-   - IFX < ELSE resolves dangling else
-*/
 
 
 precedence right ASSIGN;
 precedence left OR;
 precedence left AND;
+precedence right NOT;
 precedence nonassoc LT, LE, GT, GE, EQ, NE;
 precedence left PLUS, MINUS;
 precedence left MUL, DIV;
-precedence right NOT;
+precedence right UMINUS;
 precedence right IFX;
 precedence right ELSE;
 
@@ -305,97 +294,36 @@ return_stmt
 expression
   ::= var:v ASSIGN expression:e
   {: RESULT = new AssignExp(vleft, vright, v, e); :}
-  |  obool_expression:o
-  {: RESULT = o; :}
-  ;
-
-var
-  ::= ID:i
-  {: RESULT = new VarExp(ileft, iright, i); :}
-  |  ID:i LSBRACKET expression:e RSBRACKET
-  {: RESULT = new VarExp(ileft, iright, i, e); :}
-  ;
-
-obool_expression
-  ::= obool_expression:o OR abool_expression:a
-  {: RESULT = new OpExp(oleft, oright, o, OpExp.OR, a); :}
-  |  abool_expression:a
-  {: RESULT = a; :}
-  ;
-
-abool_expression
-  ::= abool_expression:a AND ubool_expression:u
-  {: RESULT = new OpExp(aleft, aright, a, OpExp.AND, u); :}
-  |  ubool_expression:u
-  {: RESULT = u; :}
-  ;
-
-ubool_expression
-  ::= NOT:n ubool_expression:u
-  {: RESULT = new OpExp(nleft, nright, null, OpExp.NOT, u); :}
-  |  simple_expression:s
-  {: RESULT = s; :}
-  ;
-
-simple_expression
-  ::= additive_expression:a1 relop:r additive_expression:a2
-  {: RESULT = new OpExp(a1left, a1right, a1, r, a2); :}
-  |  additive_expression:a
-  {: RESULT = a; :}
-  ;
-
-relop
-  ::= LE:r
-  {: RESULT = OpExp.LE; :}
-  |  LT:r
-  {: RESULT = OpExp.LT; :}
-  |  GT:r
-  {: RESULT = OpExp.GT; :}
-  |  GE:r
-  {: RESULT = OpExp.GE; :}
-  |  EQ:r
-  {: RESULT = OpExp.EQ; :}
-  |  NE:r
-  {: RESULT = OpExp.NE; :}
-  ;
-
-additive_expression
-  ::= additive_expression:a addop:op term:t
-  {: RESULT = new OpExp(aleft, aright, a, op, t); :}
-  |  term:t
-  {: RESULT = t; :}
-  ;
-
-addop
-  ::= PLUS:op
-  {: RESULT = OpExp.PLUS; :}
-  |  MINUS:op
-  {: RESULT = OpExp.MINUS; :}
-  ;
-
-term
-  ::= term:t mulop:op signed_factor:f
-  {: RESULT = new OpExp(tleft, tright, t, op, f); :}
-  |  signed_factor:f
-  {: RESULT = f; :}
-  ;
-
-mulop
-  ::= MUL:op
-  {: RESULT = OpExp.MUL; :}
-  |  DIV:op
-  {: RESULT = OpExp.DIV; :}
-  ;
-
-signed_factor
-  ::= MINUS:m signed_factor:f
-  {: RESULT = new OpExp(mleft, mright, null, OpExp.UMINUS, f); :}
-  |  factor:f
-  {: RESULT = f; :}
-  ;
-
-factor
-  ::= LPAREN expression:e RPAREN
+  |  expression:e1 OR expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.OR, e2); :}
+  |  expression:e1 AND expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.AND, e2); :}
+  |  NOT:n expression:e
+  {: RESULT = new OpExp(nleft, nright, null, OpExp.NOT, e); :}
+  |  expression:e1 LE expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.LE, e2); :}
+  |  expression:e1 LT expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.LT, e2); :}
+  |  expression:e1 GT expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.GT, e2); :}
+  |  expression:e1 GE expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.GE, e2); :}
+  |  expression:e1 EQ expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.EQ, e2); :}
+  |  expression:e1 NE expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.NE, e2); :}
+  |  expression:e1 PLUS expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.PLUS, e2); :}
+  |  expression:e1 MINUS expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.MINUS, e2); :}
+  |  expression:e1 MUL expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.MUL, e2); :}
+  |  expression:e1 DIV expression:e2
+  {: RESULT = new OpExp(e1left, e1right, e1, OpExp.DIV, e2); :}
+  |  MINUS:m expression:e
+  {: RESULT = new OpExp(mleft, mright, null, OpExp.UMINUS, e); :}
+  %prec UMINUS
+  |  LPAREN expression:e RPAREN
   {: RESULT = e; :}
   |  var:v
   {: RESULT = v; :}
@@ -405,6 +333,13 @@ factor
   {: RESULT = new IntExp(nleft, nright, String.valueOf(n)); :}
   |  TRUTH:t
   {: RESULT = new BoolExp(tleft, tright, t); :}
+  ;
+
+var
+  ::= ID:i
+  {: RESULT = new VarExp(ileft, iright, i); :}
+  |  ID:i LSBRACKET expression:e RSBRACKET
+  {: RESULT = new VarExp(ileft, iright, i, e); :}
   ;
 
 call
