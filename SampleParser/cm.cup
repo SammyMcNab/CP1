@@ -131,6 +131,17 @@ declaration_list
   :}
   |  declaration:d
   {: RESULT = new DecList(d, null); :}
+  /* create dummy node to link children off of*/
+  |  error:e compound_stmt:cs
+  {: parser.report_error("invalid function declaration", null);
+     RESULT = new DecList(new FunDec(eleft, eright, new Type(eleft, eright, "void"), "?", null, cs), null);
+  :}
+  /* adds a dummy node so we can actually store the children*/
+  
+  |  error:e compound_stmt:cs
+  {: parser.report_error("invalid function declaration", null);
+     RESULT = new DecList(new FunDec(eleft, eright, new Type(eleft, eright, "void"), "?error?", null, cs), null);
+  :}
   |  declaration_list:d0 error:e RCURLY
   {: parser.report_error("invalid declaration", null);
      RESULT = d0;
