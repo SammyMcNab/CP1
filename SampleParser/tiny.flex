@@ -6,6 +6,8 @@
   and then after the parser is created
     javac Lexer.java
 */
+
+import absyn.*;
    
 /* --------------------------Usercode Section------------------------ */
    
@@ -24,6 +26,7 @@ import java_cup.runtime.*;
 %eofval{
   return null;
 %eofval};
+
 
 /*
   The current line number can be accessed with the variable yyline
@@ -69,24 +72,14 @@ import java_cup.runtime.*;
   in the Lexical Rules Section.  
 */
    
-/* A line terminator is a \r (carriage return), \n (line feed), or
-   \r\n. */
-LineTerminator = \r|\n|\r\n
+
    
 /* White space is a line terminator, space, tab, or form feed. */
-WhiteSpace     = {LineTerminator} | [ \t\f]
-   
-/* A literal integer is is a number beginning with a number between
-   one and nine followed by zero or more numbers between zero and nine
-   or just a zero.  */
+whitespace = [ \t\f\r\n]+
 digit = [0-9]
 number = {digit}+
-   
-/* A identifier integer is a word beginning a letter between A and
-   Z, a and z, or an underscore followed by zero or more letters
-   between A and Z, a and z, zero and nine, or an underscore. */
-letter = [a-zA-Z]
-identifier = {letter}+
+letter     = [_a-zA-Z]
+identifier = {letter}[_a-zA-Z0-9]*
    
 %%
 /* ------------------------Lexical Rules Section---------------------- */
@@ -96,27 +89,57 @@ identifier = {letter}+
    code, that will be executed when the scanner matches the associated
    regular expression. */
    
-"if"               { return symbol(sym.IF); }
-"then"             { return symbol(sym.THEN); }
-"else"             { return symbol(sym.ELSE); }
-"end"              { return symbol(sym.END); }
-"repeat"           { return symbol(sym.REPEAT); }
-"until"            { return symbol(sym.UNTIL); }
-"read"             { return symbol(sym.READ); }
-"write"            { return symbol(sym.WRITE); }
-":="               { return symbol(sym.ASSIGN); }
-"="                { return symbol(sym.EQ); }
-"<"                { return symbol(sym.LT); }
-">"                { return symbol(sym.GT); }
-"+"                { return symbol(sym.PLUS); }
-"-"                { return symbol(sym.MINUS); }
-"*"                { return symbol(sym.TIMES); }
-"/"                { return symbol(sym.OVER); }
-"("                { return symbol(sym.LPAREN); }
-")"                { return symbol(sym.RPAREN); }
-";"                { return symbol(sym.SEMI); }
-{number}           { return symbol(sym.NUM, yytext()); }
-{identifier}       { return symbol(sym.ID, yytext()); }
-{WhiteSpace}+      { /* skip whitespace */ }   
-"{"[^\}]*"}"       { /* skip comments */ }
-.                  { return symbol(sym.ERROR); }
+
+<YYINITIAL> {   
+ "bool"      { return symbol(sym.BOOL); }
+  "else"      { return symbol(sym.ELSE); }
+  "if"        { return symbol(sym.IF); }
+  "int"       { return symbol(sym.INT); }
+  "return"    { return symbol(sym.RETURN); }
+  "void"      { return symbol(sym.VOID); }
+  "while"     { return symbol(sym.WHILE); }
+
+  "false"     { return symbol(sym.TRUTH, yytext()); }
+  "true"      { return symbol(sym.TRUTH, yytext()); }
+
+  "<="        { return symbol(sym.LE); }
+  ">="        { return symbol(sym.GE); }
+  "=="        { return symbol(sym.EQ); }
+  "!="        { return symbol(sym.NE); }
+  "||"        { return symbol(sym.OR); }
+  "&&"        { return symbol(sym.AND); }
+
+  "+"         { return symbol(sym.PLUS); }
+  "-"         { return symbol(sym.MINUS); }
+  "*"         { return symbol(sym.TIMES); }
+  "/"         { return symbol(sym.OVER); }
+  "<"         { return symbol(sym.LT); }
+  ">"         { return symbol(sym.GT); }
+  "!"         { return symbol(sym.NOT); }
+  "="         { return symbol(sym.ASSIGN); }
+  ";"         { return symbol(sym.SEMI); }
+  ","         { return symbol(sym.COMMA); }
+  "("         { return symbol(sym.LPAREN); }
+  ")"         { return symbol(sym.RPAREN); }
+  "["         { return symbol(sym.LBRACK); }
+  "]"         { return symbol(sym.RBRACK); }
+  "{"         { return symbol(sym.LBRACE); }
+  "}"         { return symbol(sym.RBRACE); }
+
+  "/*"        { yybegin(COMMENT); }
+
+
+  {number}    { return symbol(sym.NUM, yytext()); }
+  {identifier}{ return symbol(sym.ID, yytext()); }
+
+  {whitespace}        { /* skip whitespace */ }
+
+  .           { return symbol(sym.ERROR, yytext()); }
+}
+<COMMENT> {
+  "*/"        { yybegin(YYINITIAL); }
+  [^*\n\r]+   { /* skip */ }
+  "*"         { /* skip */ }
+  \r|\n|\r\n  { /* skip */ }
+  <<EOF>>     { return symbol(sym.ERROR, "unterminated comment"); }
+}

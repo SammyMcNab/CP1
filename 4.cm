@@ -1,0 +1,15 @@
+/* A program to compute the factorial value of an integer */
+/* Program starts with error "vod" but recovers when it reaches the open curly brace */
+
+
+vod main(void) {
+  if (i=0) {
+    i = i + 2;
+  }
+}
+
+void main(void) {
+  if (i=0) {
+    i = i + 1;
+  }
+}

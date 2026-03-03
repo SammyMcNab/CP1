@@ -1,12 +1,10 @@
 package absyn;
 
-public class WriteExp extends Exp {
-  public Exp output;
+public class NilExp extends Exp {
 
-  public WriteExp( int row, int col, Exp output ) {
+  public NilExp( int row, int col ) {
     this.row = row;
     this.col = col;
-    this.output = output;
   }
 
   public void accept( AbsynVisitor visitor, int level ) {

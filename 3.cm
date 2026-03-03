@@ -1,0 +1,11 @@
+/* A program to compute the factorial value of an integer */
+/* Dangling else problem. Tests that the else maps to the closest if stmt*/
+
+
+void main(void) {
+  if (i = 0)
+  if (j = 1)
+  if (j = 2)
+  else 
+    return 5;
+}

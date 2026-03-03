@@ -1,0 +1,21 @@
+/* A program to compute the factorial value of an integer */
+/* Lexical error caught by cm.flex line 7 and 8
+ Syntax error line 13 missing SEMI */
+/* Incorrect function header */
+/* Testing that function body is not skipped and also errors recover as
+ soon as possible while contining parse*/
+
+
+voi main(void) {
+  int x; 
+  int fac;
+  @
+  x = $inp#ut();
+  fac = 1;
+  while (x > 1) {
+    fac = fac * x;
+    x = x - 1
+  } 
+
+  output(fac);
+}
